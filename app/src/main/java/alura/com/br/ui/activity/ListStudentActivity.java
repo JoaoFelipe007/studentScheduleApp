@@ -63,17 +63,23 @@ public class ListStudentActivity extends AppCompatActivity {
     private void listaAlunos() {
         ListView listaAluno = findViewById(R.id.acitivity_list_students_listview);
         final List<Aluno> alunos = dao.todos();
+        configuraAdapter(listaAluno, alunos);
+        configuraClickPorItem(listaAluno);
+    }
+
+    private void configuraAdapter(ListView listaAluno, List<Aluno> alunos) {
         listaAluno.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 alunos));
+    }
 
-
+    private void configuraClickPorItem(ListView listaAluno) {
         listaAluno.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             //Metodo que irá pegar as informações do aluno e enviar para o formulario
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Aluno alunoEscolhido = alunos.get(position);
+                Aluno alunoEscolhido = (Aluno) parent.getItemAtPosition(position); //com base no item selecionado ele consegue retornar um objeto
                 Intent vaiParaFormularioActivity =new Intent(ListStudentActivity.this,FormStudentActivity.class);
                 vaiParaFormularioActivity.putExtra("aluno",alunoEscolhido);
                 /* através do putExtra vc manda o objeto e suas informações para a outra activity

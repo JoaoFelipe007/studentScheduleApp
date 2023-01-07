@@ -1,5 +1,7 @@
 package alura.com.br.ui.activity;
 
+import static alura.com.br.ui.activity.ConstantesActivities.CHAVE_ALUNO;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +18,8 @@ import alura.com.br.model.Aluno;
 
 public class FormStudentActivity extends AppCompatActivity {
 
-    public static final String TITULO_APPBAR = "Adicionar novo aluno";
+    public static final String TITULO_APPBAR_ADICIONA_ALUNO = "Adicionar novo aluno";
+    private static final String TITULO_APPBAR_EDITA_ALUNO ="Editar aluno" ;
     private EditText campoNome;
     private EditText campoTelefone;
     private EditText campoEmail;
@@ -27,16 +30,23 @@ public class FormStudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_student);
-        setTitle(TITULO_APPBAR);
         inicializacaoDosCampos();
         configuraBotaoSalvar();
+        carregaAluno();
+    }
 
+    private void carregaAluno() {
         Intent dados = getIntent(); // recupera os dados enviado da lista
-        // faz o cast do Serializable para o objeto
-        aluno = (Aluno) dados.getSerializableExtra("aluno");
-        campoNome.setText(aluno.getNome());
-        campoEmail.setText(aluno.getEmail());
-        campoTelefone.setText(aluno.getTelefone());
+        if (dados.hasExtra(CHAVE_ALUNO)) {
+            setTitle(TITULO_APPBAR_EDITA_ALUNO);
+            aluno = (Aluno) dados.getSerializableExtra(CHAVE_ALUNO);        // faz o cast do Serializable para o objeto
+            campoNome.setText(aluno.getNome());
+            campoEmail.setText(aluno.getEmail());
+            campoTelefone.setText(aluno.getTelefone());
+        } else {
+            setTitle(TITULO_APPBAR_ADICIONA_ALUNO);
+            aluno = new Aluno();
+        }
     }
 
     private void configuraBotaoSalvar() {
@@ -56,17 +66,19 @@ public class FormStudentActivity extends AppCompatActivity {
     }
 
     private void salvaAluno() {
-//        Aluno alunoCriado =  preencheAluno();
-//        alunoDAO.salva(alunoCriado);
-        preencheAluno();
-        alunoDAO.edita(aluno);
+         preencheAluno();
+        if (aluno.getId() > 0) {
+            alunoDAO.edita(aluno);
+        }else{
+            alunoDAO.salva(aluno);
+        }
         finish();
     }
 
     private void preencheAluno() {
         String nome = campoNome.getText().toString();
         String telefone = campoTelefone.getText().toString();
-        String email= campoEmail.getText().toString();
+        String email = campoEmail.getText().toString();
 
         aluno.setNome(nome);
         aluno.setTelefone(telefone);
