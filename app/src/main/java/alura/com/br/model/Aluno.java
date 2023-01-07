@@ -2,7 +2,11 @@ package alura.com.br.model;
 
 import androidx.annotation.NonNull;
 
-public class Aluno {
+import java.io.Serializable;
+
+public class Aluno implements Serializable
+{
+    private Long id = 0L;
     private String nome;
     private String telefone;
     private String email;
@@ -35,6 +39,14 @@ public class Aluno {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @NonNull

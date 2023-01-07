@@ -1,11 +1,14 @@
 package alura.com.br.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.Serializable;
 
 import alura.com.br.R;
 import alura.com.br.dao.AlunoDAO;
@@ -18,6 +21,7 @@ public class FormStudentActivity extends AppCompatActivity {
     private EditText campoTelefone;
     private EditText campoEmail;
     final AlunoDAO alunoDAO = new AlunoDAO();
+    private Aluno aluno;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,13 @@ public class FormStudentActivity extends AppCompatActivity {
         setTitle(TITULO_APPBAR);
         inicializacaoDosCampos();
         configuraBotaoSalvar();
+
+        Intent dados = getIntent(); // recupera os dados enviado da lista
+        // faz o cast do Serializable para o objeto
+        aluno = (Aluno) dados.getSerializableExtra("aluno");
+        campoNome.setText(aluno.getNome());
+        campoEmail.setText(aluno.getEmail());
+        campoTelefone.setText(aluno.getTelefone());
     }
 
     private void configuraBotaoSalvar() {
@@ -45,12 +56,20 @@ public class FormStudentActivity extends AppCompatActivity {
     }
 
     private void salvaAluno() {
+//        Aluno alunoCriado =  preencheAluno();
+//        alunoDAO.salva(alunoCriado);
+        preencheAluno();
+        alunoDAO.edita(aluno);
+        finish();
+    }
+
+    private void preencheAluno() {
         String nome = campoNome.getText().toString();
         String telefone = campoTelefone.getText().toString();
         String email= campoEmail.getText().toString();
-        Aluno alunoCriado =  new Aluno(nome,telefone,email);
-        alunoDAO.salva(alunoCriado);
 
-        finish();
+        aluno.setNome(nome);
+        aluno.setTelefone(telefone);
+        aluno.setEmail(email);
     }
 }
