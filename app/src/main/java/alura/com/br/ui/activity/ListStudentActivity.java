@@ -29,6 +29,7 @@ public class ListStudentActivity extends AppCompatActivity {
     public static final String TITULO_APPBAR = "Lista de aluno";
     private FloatingActionButton newStudent;
     AlunoDAO dao = new AlunoDAO();
+    private ArrayAdapter<Aluno> adapter;
 
 
     @Override
@@ -37,15 +38,15 @@ public class ListStudentActivity extends AppCompatActivity {
         setContentView(layout.activity_list_student);
         setTitle(TITULO_APPBAR);
         Toast.makeText(this, "Bem vindo a sua Agenda", Toast.LENGTH_SHORT).show();//Aparece uma msg quando abre o app
-        dao.salva(new Aluno("João", "17999855", "joao@gmail.com"));
-        dao.salva(new Aluno("Rai", "17999844", "rai@gmail.com"));
+        listaAlunos();/*eio para o onCreate pois as informações
+         só precisam ser executadas uma unica vez e não toda
+         s as vezes que a activity entra em on resume*/
         configuraFabNovoAluno();
 
     }
 
     private void configuraFabNovoAluno() {
         newStudent = findViewById(R.id.activity_list_student_fb_new_student);
-
         newStudent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,30 +58,35 @@ public class ListStudentActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        listaAlunos();
+        adapter.clear();//Enquanto tiver neeste estado ele ira limapr os dados da listView
+        adapter.addAll(dao.todos());//E logo após ele ira adcionar tudo novamente na listView
     }
 
     private void listaAlunos() {
         ListView listaAluno = findViewById(R.id.acitivity_list_students_listview);
-        final List<Aluno> alunos = dao.todos();
-        configuraAdapter(listaAluno, alunos);
+        configuraAdapter(listaAluno);
         configuraClickPorItem(listaAluno);
+        configuraClickLongPorItem(listaAluno);
+    }
 
+    private void configuraClickLongPorItem(ListView listaAluno) {
         listaAluno.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Aluno alunoEscolhido = (Aluno)parent.getItemAtPosition(position);
                 dao.remove(alunoEscolhido);
+                adapter.remove(alunoEscolhido);
                 return false;
             }
         });
     }
 
-    private void configuraAdapter(ListView listaAluno, List<Aluno> alunos) {
-        listaAluno.setAdapter(new ArrayAdapter<>(
+    private void configuraAdapter(ListView listaAluno) {
+        adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_list_item_1,
-                alunos));
+                android.R.layout.simple_list_item_1
+                );//deixei o adpter como uma variavel global para que possa ser usada em outra situaçõe
+        listaAluno.setAdapter(adapter);
     }
 
     private void configuraClickPorItem(ListView listaAluno) {
