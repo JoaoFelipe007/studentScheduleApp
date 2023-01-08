@@ -91,6 +91,18 @@ public class ListStudentActivity extends AppCompatActivity {
         configuraClickPorItem(listaAluno);
         registerForContextMenu(listaAluno);
     }
+//
+//    private void configuraClickLongPorItem(ListView listaAluno) {
+//        listaAluno.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                Aluno alunoEscolhido = (Aluno)parent.getItemAtPosition(position);
+//                dao.remove(alunoEscolhido);
+//                adapter.remove(alunoEscolhido);
+//                return false;
+//            }
+//        });
+//    }
 
     private void configuraAdapter(ListView listaAluno) {
         adapter = new ArrayAdapter<>(
