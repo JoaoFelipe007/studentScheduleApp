@@ -4,13 +4,14 @@ import static alura.com.br.ui.activity.ConstantesActivities.CHAVE_ALUNO;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.io.Serializable;
 
 import alura.com.br.R;
 import alura.com.br.dao.AlunoDAO;
@@ -31,8 +32,22 @@ public class FormStudentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_student);
         inicializacaoDosCampos();
-        configuraBotaoSalvar();
         carregaAluno();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_form_student_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if(itemId == R.id.activity_form_student_menu_salvar){
+            salvaAluno();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void carregaAluno() {
@@ -47,16 +62,6 @@ public class FormStudentActivity extends AppCompatActivity {
             setTitle(TITULO_APPBAR_ADICIONA_ALUNO);
             aluno = new Aluno();
         }
-    }
-
-    private void configuraBotaoSalvar() {
-        Button saveButton = findViewById(R.id.activity_form_student_button_save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                salvaAluno();
-            }
-        });
     }
 
     private void inicializacaoDosCampos() {
