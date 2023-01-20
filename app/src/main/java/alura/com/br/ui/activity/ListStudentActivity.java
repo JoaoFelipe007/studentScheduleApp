@@ -4,12 +4,10 @@ import static alura.com.br.R.layout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,20 +17,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import alura.com.br.R;
 import alura.com.br.dao.AlunoDAO;
 import alura.com.br.model.Aluno;
+import alura.com.br.ui.adapter.StudentListAdapter;
 
 public class ListStudentActivity extends AppCompatActivity {
 
     public static final String TITULO_APPBAR = "Lista de aluno";
     private FloatingActionButton newStudent;
     AlunoDAO dao = new AlunoDAO();
-    private ArrayAdapter<Aluno> adapter;
+    private StudentListAdapter adapter;
 
 
     @Override
@@ -41,7 +36,7 @@ public class ListStudentActivity extends AppCompatActivity {
         setContentView(layout.activity_list_student);
         setTitle(TITULO_APPBAR);
         Toast.makeText(this, "Bem vindo a sua Agenda", Toast.LENGTH_SHORT).show();//Aparece uma msg quando abre o app
-        listaAlunos();/*eio para o onCreate pois as informações
+        listaAlunos();/*veio para o onCreate pois as informações
          só precisam ser executadas uma unica vez e não toda
          s as vezes que a activity entra em on resume*/
         configuraFabNovoAluno();
@@ -60,7 +55,7 @@ public class ListStudentActivity extends AppCompatActivity {
         if (itemId == R.id.activity_list_student_menu_remove) {
             AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();/* .getmenuInfo é usado para pegar mais
        informações... porém do jeito que está e de um modo especifico para AdapterViews*/
-            Aluno alunoEscolhido = adapter.getItem(menuInfo.position);
+            Aluno alunoEscolhido = (Aluno) adapter.getItem(menuInfo.position);
             dao.remove(alunoEscolhido);
             adapter.remove(alunoEscolhido);
         }
@@ -105,10 +100,7 @@ public class ListStudentActivity extends AppCompatActivity {
 //    }
 
     private void configuraAdapter(ListView listaAluno) {
-        adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1
-        );//deixei o adpter como uma variavel global para que possa ser usada em outra situaçõe
+        adapter = new StudentListAdapter(this);
         listaAluno.setAdapter(adapter);
     }
 

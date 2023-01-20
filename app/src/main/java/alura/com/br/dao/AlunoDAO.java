@@ -15,6 +15,7 @@ public class AlunoDAO {
         aluno.setId(contadordeIds);
         alunos.add(aluno);
         contadordeIds++;
+        aluno = new Aluno();
     }
 
     public void edita(Aluno aluno) {
